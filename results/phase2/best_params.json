@@ -1,0 +1,267 @@
+{
+  "A | smote | Logistic Regression": {
+    "model__C": 0.01
+  },
+  "A | smote | Random Forest": {
+    "model__max_depth": 10,
+    "model__min_samples_leaf": 1,
+    "model__n_estimators": 200
+  },
+  "A | smote | XGBoost": {
+    "model__learning_rate": 0.1,
+    "model__max_depth": 3,
+    "model__n_estimators": 100
+  },
+  "A | smote | SVM": {
+    "model__C": 0.1,
+    "model__kernel": "rbf"
+  },
+  "A | smote | LightGBM": {
+    "model__learning_rate": 0.05,
+    "model__max_depth": 3,
+    "model__n_estimators": 200
+  },
+  "A | smote | Gradient Boosting": {
+    "model__learning_rate": 0.05,
+    "model__max_depth": 3,
+    "model__n_estimators": 200
+  },
+  "A | smote | KNN": {
+    "model__n_neighbors": 21,
+    "model__weights": "distance"
+  },
+  "A | smotenc | Logistic Regression": {
+    "model__C": 0.01
+  },
+  "A | smotenc | Random Forest": {
+    "model__max_depth": 5,
+    "model__min_samples_leaf": 1,
+    "model__n_estimators": 200
+  },
+  "A | smotenc | XGBoost": {
+    "model__learning_rate": 0.05,
+    "model__max_depth": 3,
+    "model__n_estimators": 200
+  },
+  "A | smotenc | SVM": {
+    "model__C": 0.1,
+    "model__kernel": "rbf"
+  },
+  "A | smotenc | LightGBM": {
+    "model__learning_rate": 0.1,
+    "model__max_depth": 3,
+    "model__n_estimators": 100
+  },
+  "A | smotenc | Gradient Boosting": {
+    "model__learning_rate": 0.05,
+    "model__max_depth": 3,
+    "model__n_estimators": 200
+  },
+  "A | smotenc | KNN": {
+    "model__n_neighbors": 21,
+    "model__weights": "distance"
+  },
+  "A | class_weight | Logistic Regression": {
+    "model__C": 0.01
+  },
+  "A | class_weight | Random Forest": {
+    "model__max_depth": 5,
+    "model__min_samples_leaf": 1,
+    "model__n_estimators": 200
+  },
+  "A | class_weight | XGBoost": {
+    "model__learning_rate": 0.05,
+    "model__max_depth": 3,
+    "model__n_estimators": 100
+  },
+  "A | class_weight | SVM": {
+    "model__C": 0.1,
+    "model__kernel": "rbf"
+  },
+  "A | class_weight | LightGBM": {
+    "model__learning_rate": 0.1,
+    "model__max_depth": 3,
+    "model__n_estimators": 100
+  },
+  "A | class_weight | Gradient Boosting": {
+    "model__learning_rate": 0.05,
+    "model__max_depth": 3,
+    "model__n_estimators": 100
+  },
+  "B | class_weight | Logistic Regression": {
+    "model__C": 0.01
+  },
+  "C | class_weight | Logistic Regression": "A settings in every cluster",
+  "C | class_weight | Logistic Regression | test model": {
+    "cluster 0": {
+      "model__C": 100
+    },
+    "cluster 1": {
+      "model__C": 0.01
+    },
+    "cluster 2": {
+      "model__C": 0.01
+    },
+    "cluster 3": {
+      "model__C": 0.01
+    }
+  },
+  "B | class_weight | Random Forest": {
+    "model__max_depth": null,
+    "model__min_samples_leaf": 5,
+    "model__n_estimators": 200
+  },
+  "C | class_weight | Random Forest": "A settings in every cluster",
+  "C | class_weight | Random Forest | test model": {
+    "cluster 0": {
+      "model__max_depth": 5,
+      "model__min_samples_leaf": 5,
+      "model__n_estimators": 200
+    },
+    "cluster 1": {
+      "model__max_depth": 5,
+      "model__min_samples_leaf": 1,
+      "model__n_estimators": 200
+    },
+    "cluster 2": {
+      "model__max_depth": 5,
+      "model__min_samples_leaf": 5,
+      "model__n_estimators": 100
+    },
+    "cluster 3": {
+      "model__max_depth": 5,
+      "model__min_samples_leaf": 5,
+      "model__n_estimators": 100
+    }
+  },
+  "B | class_weight | XGBoost": {
+    "model__learning_rate": 0.05,
+    "model__max_depth": 3,
+    "model__n_estimators": 100
+  },
+  "C | class_weight | XGBoost": "A settings in every cluster",
+  "C | class_weight | XGBoost | test model": {
+    "cluster 0": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 3,
+      "model__n_estimators": 100
+    },
+    "cluster 1": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 5,
+      "model__n_estimators": 200
+    },
+    "cluster 2": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 3,
+      "model__n_estimators": 100
+    },
+    "cluster 3": {
+      "model__learning_rate": 0.1,
+      "model__max_depth": 5,
+      "model__n_estimators": 200
+    }
+  },
+  "B | class_weight | SVM": {
+    "model__C": 0.1,
+    "model__kernel": "rbf"
+  },
+  "C | class_weight | SVM": "A settings in every cluster",
+  "C | class_weight | SVM | test model": {
+    "cluster 0": {
+      "model__C": 0.1,
+      "model__kernel": "rbf"
+    },
+    "cluster 1": {
+      "model__C": 0.1,
+      "model__kernel": "rbf"
+    },
+    "cluster 2": {
+      "model__C": 0.1,
+      "model__kernel": "rbf"
+    },
+    "cluster 3": {
+      "model__C": 0.1,
+      "model__kernel": "rbf"
+    }
+  },
+  "B | class_weight | LightGBM": {
+    "model__learning_rate": 0.1,
+    "model__max_depth": 3,
+    "model__n_estimators": 100
+  },
+  "C | class_weight | LightGBM": "A settings in every cluster",
+  "C | class_weight | LightGBM | test model": {
+    "cluster 0": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 3,
+      "model__n_estimators": 100
+    },
+    "cluster 1": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 3,
+      "model__n_estimators": 100
+    },
+    "cluster 2": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 3,
+      "model__n_estimators": 100
+    },
+    "cluster 3": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 3,
+      "model__n_estimators": 100
+    }
+  },
+  "B | class_weight | Gradient Boosting": {
+    "model__learning_rate": 0.05,
+    "model__max_depth": 3,
+    "model__n_estimators": 100
+  },
+  "C | class_weight | Gradient Boosting": "A settings in every cluster",
+  "C | class_weight | Gradient Boosting | test model": {
+    "cluster 0": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 3,
+      "model__n_estimators": 100
+    },
+    "cluster 1": {
+      "model__learning_rate": 0.1,
+      "model__max_depth": 5,
+      "model__n_estimators": 100
+    },
+    "cluster 2": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 3,
+      "model__n_estimators": 100
+    },
+    "cluster 3": {
+      "model__learning_rate": 0.05,
+      "model__max_depth": 5,
+      "model__n_estimators": 100
+    }
+  },
+  "B | smote | KNN": {
+    "model__n_neighbors": 21,
+    "model__weights": "distance"
+  },
+  "C | smote | KNN": "A settings in every cluster",
+  "C | smote | KNN | test model": {
+    "cluster 0": {
+      "model__n_neighbors": 21,
+      "model__weights": "distance"
+    },
+    "cluster 1": {
+      "model__n_neighbors": 21,
+      "model__weights": "distance"
+    },
+    "cluster 2": {
+      "model__n_neighbors": 21,
+      "model__weights": "distance"
+    },
+    "cluster 3": {
+      "model__n_neighbors": 9,
+      "model__weights": "distance"
+    }
+  }
+}

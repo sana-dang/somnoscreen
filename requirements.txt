@@ -6,7 +6,7 @@ scikit-learn==1.6.1
 imbalanced-learn==0.13.0
 xgboost==3.2.0
 lightgbm==4.7.0
-shap==0.51.0
+shap==0.51.0  # 0.52 (used for the thesis run) needs Python 3.12; SHAP does not affect results
 matplotlib==3.10.0
 seaborn==0.13.2
 joblib==1.4.2

@@ -1,0 +1,83 @@
+{
+  "selection": {
+    "model": "Logistic Regression",
+    "imbalance_strategy": "class_weight",
+    "params": {
+      "model__C": 0.01
+    },
+    "best_cv_model": "Logistic Regression",
+    "best_cv_pr_auc": 0.5472091848377935,
+    "preferred_cv_pr_auc": 0.5472091848377935,
+    "preferred_cv_pr_auc_sd": 0.0177101068653199,
+    "rule": "Logistic Regression unless another model's mean CV PR-AUC is more than one SD higher",
+    "calibration": "sigmoid"
+  },
+  "target_recall": 0.7,
+  "screening_threshold": 0.24618594707420738,
+  "train_oof_at_threshold": {
+    "Threshold": 0.24618594707420738,
+    "Accuracy": 0.6868426701008801,
+    "Balanced_Acc": 0.6911159878673071,
+    "Precision": 0.4461459928534967,
+    "Recall": 0.7003205128205128,
+    "F1": 0.5450576863111942,
+    "ROC_AUC": 0.7546195284486841,
+    "PR_AUC": 0.5399116928827993,
+    "Brier": 0.16340684829524452
+  },
+  "cv_5x5_final_model": {
+    "ROC_AUC_mean": 0.7573312402310581,
+    "ROC_AUC_std": 0.014598873038315245,
+    "PR_AUC_mean": 0.5472091848377935,
+    "PR_AUC_std": 0.01771010686531999,
+    "Brier_mean": 0.16280741090395756,
+    "Brier_std": 0.0034982229224119837,
+    "Accuracy@0.5_mean": 0.7646723030752848,
+    "Accuracy@0.5_std": 0.008222991936666535,
+    "Balanced_Acc@0.5_mean": 0.6152608798750646,
+    "Balanced_Acc@0.5_std": 0.010866621001816517,
+    "Precision@0.5_mean": 0.6324293078347221,
+    "Precision@0.5_std": 0.038437171414362405,
+    "Recall@0.5_mean": 0.2934342168674699,
+    "Recall@0.5_std": 0.022841079402124757,
+    "F1@0.5_mean": 0.4001578618364682,
+    "F1@0.5_std": 0.023028234111280313,
+    "Precision@Recall_mean": 0.4534375855329001,
+    "Precision@Recall_std": 0.025888086980963697
+  },
+  "test_at_threshold": {
+    "Threshold": 0.24618594707420738,
+    "Accuracy": 0.6695278969957081,
+    "Balanced_Acc": 0.6757353383232633,
+    "Precision": 0.4274353876739563,
+    "Recall": 0.6891025641025641,
+    "F1": 0.5276073619631901,
+    "ROC_AUC": 0.757913247362251,
+    "PR_AUC": 0.5300299560186676,
+    "Brier": 0.16339269546239263
+  },
+  "test_bootstrap_95ci": {
+    "ROC_AUC": [
+      0.7269311131560771,
+      0.7898187485266511
+    ],
+    "PR_AUC": [
+      0.4701969814054006,
+      0.5933634289138228
+    ]
+  },
+  "test_majority_baseline": {
+    "Threshold": 1.0,
+    "Accuracy": 0.7321888412017168,
+    "Balanced_Acc": 0.5,
+    "Precision": 0.0,
+    "Recall": 0.0,
+    "F1": 0.0,
+    "ROC_AUC": 0.5,
+    "PR_AUC": 0.26781115879828327,
+    "Brier": 0.1960883453256465
+  },
+  "test_raw_uncalibrated_brier": 0.20183259349918692,
+  "n_train": 4659,
+  "n_test": 1165
+}

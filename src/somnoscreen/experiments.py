@@ -19,6 +19,7 @@ Run:  python -m somnoscreen.experiments reproduce
 from __future__ import annotations
 
 import argparse
+import json
 import time
 import warnings
 
@@ -26,21 +27,41 @@ import numpy as np
 import pandas as pd
 from sklearn.base import clone
 from sklearn.dummy import DummyClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, roc_auc_score
+from sklearn.metrics import (
+    accuracy_score,
+    average_precision_score,
+    confusion_matrix,
+    f1_score,
+    roc_auc_score,
+)
 from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_val_predict
 
 from somnoscreen import config
-from somnoscreen.clustering import WardClusterer, cluster_columns
+from somnoscreen.clustering import PerClusterClassifier, WardClusterer, cluster_columns
 from somnoscreen.data import load_dataset, split_train_test
 from somnoscreen.evaluate import (
     bootstrap_indices,
     bootstrap_metric,
     classification_metrics,
+    corrected_paired_ttest,
     group_metrics,
+    oof_probabilities,
     paired_difference,
+    repeated_cv,
+    save_json,
+    screening_metrics,
+    summarize_folds,
+    threshold_for_recall,
 )
-from somnoscreen.features import FEATURE_NAMES, TARGET
-from somnoscreen.pipeline import MODEL_NAMES, build_pipeline, grid_for_pipeline, make_model
+from somnoscreen.features import CATEGORICAL_FEATURES, FEATURE_NAMES, TARGET
+from somnoscreen.pipeline import (
+    IMBALANCE_STRATEGIES,
+    MODEL_NAMES,
+    build_pipeline,
+    grid_for_pipeline,
+    make_model,
+    supports_class_weight,
+)
 
 warnings.filterwarnings("ignore")
 
@@ -269,6 +290,224 @@ def build_reproduction_check(results: pd.DataFrame, boot: pd.DataFrame, cluster_
     return pd.DataFrame(rows)
 
 
+
+
+# =============================================================================================
+# Phase 2: the same research question under the stronger evaluation
+# =============================================================================================
+PHASE2_DIR = config.RESULTS_DIR / "phase2"
+RANKING_METRICS = {"ROC_AUC": roc_auc_score, "PR_AUC": average_precision_score}
+
+
+def categorical_positions(n_cluster_columns: int = 0) -> list[int]:
+    """Column positions SMOTENC must treat as categories (plus appended one-hot cluster columns)."""
+    positions = [FEATURE_NAMES.index(c) for c in CATEGORICAL_FEATURES]
+    first_extra = len(FEATURE_NAMES)
+    return positions + list(range(first_extra, first_extra + n_cluster_columns))
+
+
+def strategy_for(name: str, strategy: str) -> str:
+    """KNN cannot use class weights; it falls back to SMOTE (the thesis setting) in that case."""
+    return "smote" if strategy == "class_weight" and not supports_class_weight(name) else strategy
+
+
+def approach_pipeline(name: str, approach: str, strategy: str):
+    """Untuned pipeline for Approach A or B (B puts the Ward cluster step first).
+
+    The cluster step is inside the pipeline, so in every CV fold the clusters are fitted on that
+    fold's training rows only.
+    """
+    model = make_model(name, strategy)
+    if approach == "B":
+        return build_pipeline(model, strategy, categorical_positions(config.N_CLUSTERS),
+                              first_step=("clusters", WardClusterer(config.N_CLUSTERS)))
+    return build_pipeline(model, strategy, categorical_positions())
+
+
+def pr_auc_search(estimator, name: str, n_jobs: int = config.N_JOBS) -> GridSearchCV:
+    """GridSearchCV over the thesis grid, now scored on PR-AUC (average precision)."""
+    return GridSearchCV(estimator, grid_for_pipeline(name), cv=thesis_cv(),
+                        scoring=config.PRIMARY_SCORING, n_jobs=n_jobs)
+
+
+def choose_imbalance_strategy(summary: pd.DataFrame) -> tuple[str, pd.Series]:
+    """Strategy with the highest mean CV PR-AUC over the models that support all three strategies."""
+    supported = [n for n in MODEL_NAMES if supports_class_weight(n)]
+    rows = summary[summary["Model"].isin(supported)]
+    means = rows.groupby("Imbalance")["PR_AUC_mean"].mean().sort_values(ascending=False)
+    return str(means.index[0]), means
+
+
+def paired_cv_tests(folds: pd.DataFrame, n_train_rows: int) -> pd.DataFrame:
+    """B vs A and C vs A on the SAME 25 CV folds: mean difference and corrected t-test."""
+    n_test = n_train_rows / config.CV_FOLDS
+    n_train = n_train_rows - n_test
+    rows = []
+    for name in MODEL_NAMES:
+        for comp in ["B", "C"]:
+            for metric in RANKING_METRICS:
+                a = folds[(folds.Approach == "A") & (folds.Model == name)].sort_values(["Repeat", "Fold"])
+                b = folds[(folds.Approach == comp) & (folds.Model == name)].sort_values(["Repeat", "Fold"])
+                diffs = b[metric].to_numpy() - a[metric].to_numpy()
+                t, p = corrected_paired_ttest(diffs, int(n_train), int(n_test))
+                verdict = "no clear difference" if p >= 0.05 else ("better" if diffs.mean() > 0 else "worse")
+                rows.append({"Model": name, "Comparison": f"{comp} vs A", "Metric": metric,
+                             "Mean_Diff": diffs.mean(), "SD_Diff": diffs.std(ddof=1),
+                             "Folds_Worse": int((diffs < 0).sum()), "Folds": len(diffs),
+                             "t": t, "p_value": p, "Verdict": verdict})
+    return pd.DataFrame(rows)
+
+
+def bootstrap_ranking(y_test: np.ndarray, probs: dict[tuple[str, str], np.ndarray]) -> pd.DataFrame:
+    """Paired bootstrap of ROC-AUC and PR-AUC differences (B vs A, C vs A) on the test set."""
+    boot_idx = bootstrap_indices(len(y_test), config.N_BOOTSTRAP, config.RANDOM_STATE)
+    rows = []
+    for name in MODEL_NAMES:
+        for metric, fn in RANKING_METRICS.items():
+            base = bootstrap_metric(y_test, probs[("A", name)], boot_idx, fn)
+            for comp in ["B", "C"]:
+                other = bootstrap_metric(y_test, probs[(comp, name)], boot_idx, fn)
+                point = fn(y_test, probs[(comp, name)]) - fn(y_test, probs[("A", name)])
+                rows.append({"Model": name, "Comparison": f"{comp} vs A", "Metric": metric,
+                             **paired_difference(other - base, point)})
+    return pd.DataFrame(rows)
+
+
+def verdict_counts(table: pd.DataFrame) -> dict[str, dict[str, int]]:
+    """How many of the 7 models are significantly better / worse, per comparison and metric."""
+    out = {}
+    for (comp, metric), group in table.groupby(["Comparison", "Metric"]):
+        out[f"{comp} | {metric}"] = {
+            "better": int((group.Verdict == "better").sum()),
+            "worse": int((group.Verdict == "worse").sum()),
+            "no clear difference": int((group.Verdict == "no clear difference").sum()),
+        }
+    return out
+
+
+def run_phase2() -> None:
+    """Imbalance comparison + A/B/C comparison with repeated CV, a screening threshold and bootstrap.
+
+    Steps (all tuning and threshold choices use TRAINING rows only):
+      1. Approach A, 7 models x 3 imbalance strategies: GridSearchCV on PR-AUC, then 5x5 CV.
+      2. Pick the imbalance strategy by mean CV PR-AUC.
+      3. Approaches B and C with that strategy, evaluated on the same 25 CV folds.
+         C in CV uses Approach A's tuned settings inside every cluster (cluster ids change from fold
+         to fold, so per-cluster settings cannot be carried over); the C model checked on the test
+         set tunes each cluster separately, as in the thesis.
+      4. Screening threshold per model from out-of-fold training predictions (target recall).
+      5. One final check on the 20% test set + paired bootstrap; corrected t-test on the CV folds.
+    """
+    start = time.time()
+    PHASE2_DIR.mkdir(parents=True, exist_ok=True)
+    df = load_dataset()
+    X, y = df[FEATURE_NAMES], df[TARGET]
+    idx_train, idx_test = split_train_test(df)
+    X_tr, y_tr, X_te, y_te = X.loc[idx_train], y.loc[idx_train], X.loc[idx_test], y.loc[idx_test]
+
+    fold_tables, best_params, estimators, oof_first_repeat = [], {}, {}, {}
+
+    def record(approach: str, strategy: str, name: str, estimator, params) -> None:
+        folds, oof = repeated_cv(estimator, X_tr, y_tr)
+        fold_tables.append(folds.assign(Approach=approach, Imbalance=strategy, Model=name))
+        best_params[f"{approach} | {strategy} | {name}"] = params
+        estimators[(approach, strategy, name)] = estimator
+        oof_first_repeat[(approach, strategy, name)] = oof[0]
+        pr_auc = folds["PR_AUC"].mean()
+        print(f"  {approach} | {strategy:12s} | {name:20s} CV PR-AUC {pr_auc:.4f}", flush=True)
+
+    # ---- 1. Imbalance strategies (Approach A) --------------------------------------------------
+    print("Step 1: imbalance strategies (Approach A)")
+    for strategy in IMBALANCE_STRATEGIES:
+        for name in MODEL_NAMES:
+            if strategy == "class_weight" and not supports_class_weight(name):
+                continue
+            search = pr_auc_search(approach_pipeline(name, "A", strategy), name).fit(X_tr, y_tr)
+            record("A", strategy, name, search.best_estimator_, search.best_params_)
+
+    imbalance_folds = pd.concat(fold_tables, ignore_index=True)
+    imbalance_summary = summarize_folds(imbalance_folds, ["Imbalance", "Model"])
+    imbalance_folds.to_csv(PHASE2_DIR / "imbalance_cv_folds.csv", index=False)
+    imbalance_summary.to_csv(PHASE2_DIR / "imbalance_cv_summary.csv", index=False)
+    chosen, strategy_means = choose_imbalance_strategy(imbalance_summary)
+    print(f"Chosen imbalance strategy: {chosen}\n{strategy_means.round(4).to_string()}")
+
+    # ---- 2. Approaches B and C with the chosen strategy ----------------------------------------
+    print("Step 2: approaches B and C")
+    test_models = {}
+    for name in MODEL_NAMES:
+        strategy = strategy_for(name, chosen)
+        a_estimator = estimators[("A", strategy, name)]
+        test_models[("A", name)] = a_estimator
+
+        search = pr_auc_search(approach_pipeline(name, "B", strategy), name).fit(X_tr, y_tr)
+        record("B", strategy, name, search.best_estimator_, search.best_params_)
+        test_models[("B", name)] = search.best_estimator_
+
+        # C in CV: A's tuned settings inside each cluster
+        record("C", strategy, name, PerClusterClassifier(clone(a_estimator)), "A settings in every cluster")
+        # C on the test set: each cluster tunes its own settings (thesis Approach C)
+        per_cluster_search = PerClusterClassifier(
+            pr_auc_search(approach_pipeline(name, "A", strategy), name)
+        )
+        test_models[("C", name)] = per_cluster_search.fit(X_tr, y_tr)
+        best_params[f"C | {strategy} | {name} | test model"] = {
+            f"cluster {c}": m.best_params_ for c, m in per_cluster_search.models_.items()
+        }
+
+    all_folds = pd.concat(fold_tables, ignore_index=True)
+    approach_folds = pd.concat([
+        all_folds[(all_folds.Approach == a) & (all_folds.Model == n)
+                  & (all_folds.Imbalance == strategy_for(n, chosen))]
+        for a in "ABC" for n in MODEL_NAMES
+    ], ignore_index=True)
+    approach_folds.to_csv(PHASE2_DIR / "approach_cv_folds.csv", index=False)
+    summarize_folds(approach_folds, ["Approach", "Imbalance", "Model"]).to_csv(
+        PHASE2_DIR / "approach_cv_summary.csv", index=False)
+
+    # ---- 3. Screening threshold (training OOF) + one final check on the test set ---------------
+    print("Step 3: thresholds and test-set check")
+    test_rows, test_probs = [], {}
+    for (approach, name), model in test_models.items():
+        strategy = strategy_for(name, chosen)
+        if approach == "C":  # OOF predictions of the exact C test model (re-tuned in each fold)
+            oof = oof_probabilities(PerClusterClassifier(
+                pr_auc_search(approach_pipeline(name, "A", strategy), name, n_jobs=1)), X_tr, y_tr)
+        else:
+            oof = oof_first_repeat[(approach, strategy, name)]
+        threshold = threshold_for_recall(y_tr, oof)
+        probs = model.predict_proba(X_te)[:, 1]
+        test_probs[(approach, name)] = probs
+        test_rows.append({"Approach": approach, "Imbalance": strategy, "Model": name,
+                          **screening_metrics(y_te, probs, threshold)})
+
+    dummy = DummyClassifier(strategy="prior").fit(X_tr, y_tr)
+    test_rows.append({"Approach": "Baseline", "Imbalance": "-", "Model": "Majority class",
+                      **screening_metrics(y_te, dummy.predict_proba(X_te)[:, 1], 1.0)})
+    pd.DataFrame(test_rows).to_csv(PHASE2_DIR / "approach_test_metrics.csv", index=False)
+    pd.DataFrame({f"{a} | {n}": p for (a, n), p in test_probs.items()}, index=idx_test).assign(
+        y_true=y_te.to_numpy()).to_csv(PHASE2_DIR / "test_probabilities.csv")
+
+    # ---- 4. Is the difference real? ---------------------------------------------------------
+    cv_tests = paired_cv_tests(approach_folds, len(X_tr))
+    cv_tests.to_csv(PHASE2_DIR / "approach_cv_paired_tests.csv", index=False)
+    boot = bootstrap_ranking(y_te.to_numpy(), test_probs)
+    boot.to_csv(PHASE2_DIR / "approach_bootstrap.csv", index=False)
+
+    baseline_cv = {"ROC_AUC": 0.5, "PR_AUC": float(y_tr.mean()), "Accuracy": float(1 - y_tr.mean())}
+    summary = {
+        "imbalance_strategy_chosen": chosen,
+        "imbalance_strategy_mean_cv_pr_auc": strategy_means.to_dict(),
+        "majority_baseline_train": baseline_cv,
+        "cv_corrected_ttest_counts": verdict_counts(cv_tests),
+        "test_bootstrap_counts": verdict_counts(boot),
+        "runtime_minutes": round((time.time() - start) / 60, 1),
+    }
+    save_json(summary, PHASE2_DIR / "summary.json")
+    save_json(best_params, PHASE2_DIR / "best_params.json")
+    print(json.dumps(summary, indent=2))
+
+
 def main() -> None:
     """Command-line entry point."""
     parser = argparse.ArgumentParser(
@@ -280,11 +519,6 @@ def main() -> None:
         reproduce()
     else:
         run_phase2()
-
-
-def run_phase2() -> None:
-    """Placeholder until Phase 2 is implemented."""
-    raise NotImplementedError
 
 
 if __name__ == "__main__":

@@ -1,0 +1,58 @@
+{
+  "imbalance_strategy_chosen": "class_weight",
+  "imbalance_strategy_mean_cv_pr_auc": {
+    "class_weight": 0.5397058503632298,
+    "smote": 0.5321938061984903,
+    "smotenc": 0.5160375367363692
+  },
+  "majority_baseline_train": {
+    "ROC_AUC": 0.5,
+    "PR_AUC": 0.2678686413393432,
+    "Accuracy": 0.7321313586606568
+  },
+  "cv_corrected_ttest_counts": {
+    "B vs A | PR_AUC": {
+      "better": 0,
+      "worse": 0,
+      "no clear difference": 7
+    },
+    "B vs A | ROC_AUC": {
+      "better": 0,
+      "worse": 0,
+      "no clear difference": 7
+    },
+    "C vs A | PR_AUC": {
+      "better": 0,
+      "worse": 6,
+      "no clear difference": 1
+    },
+    "C vs A | ROC_AUC": {
+      "better": 0,
+      "worse": 7,
+      "no clear difference": 0
+    }
+  },
+  "test_bootstrap_counts": {
+    "B vs A | PR_AUC": {
+      "better": 0,
+      "worse": 0,
+      "no clear difference": 7
+    },
+    "B vs A | ROC_AUC": {
+      "better": 0,
+      "worse": 0,
+      "no clear difference": 7
+    },
+    "C vs A | PR_AUC": {
+      "better": 0,
+      "worse": 5,
+      "no clear difference": 2
+    },
+    "C vs A | ROC_AUC": {
+      "better": 0,
+      "worse": 6,
+      "no clear difference": 1
+    }
+  },
+  "runtime_minutes": 8.8
+}

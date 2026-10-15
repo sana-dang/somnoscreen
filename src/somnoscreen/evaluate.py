@@ -7,6 +7,7 @@ fairness -> figures (ROC, PR, calibration, fairness, SHAP).
 
 from __future__ import annotations
 
+import ast
 import json
 import warnings
 
@@ -124,7 +125,7 @@ def repeated_cv(estimator: BaseEstimator, X: pd.DataFrame, y: pd.Series) -> tupl
 
 def summarize_folds(folds: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
     """Mean and standard deviation of every metric over the CV folds, per group of `keys`."""
-    metrics = [c for c in folds.columns if c not in [*keys, "Repeat", "Fold"]]
+    metrics = [c for c in folds.select_dtypes("number").columns if c not in ["Repeat", "Fold"]]
     summary = folds.groupby(keys, sort=False)[metrics].agg(["mean", "std"])
     summary.columns = [f"{metric}_{stat}" for metric, stat in summary.columns]
     return summary.reset_index()
@@ -231,3 +232,167 @@ def save_json(obj: dict, path) -> None:
 
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, indent=2, default=convert))
+
+
+# =============================================================================================
+# Final-model evaluation (python -m somnoscreen.evaluate)
+# =============================================================================================
+PHASE2_DIR = config.RESULTS_DIR / "phase2"
+CALIBRATION_METHODS = ("none", "sigmoid", "isotonic")
+
+
+def load_best_params(key: str) -> dict:
+    """Tuned hyper-parameters saved by the Phase 2 comparison, as real Python values."""
+    raw = json.loads((PHASE2_DIR / "best_params.json").read_text())[key]
+
+    def parse(value):
+        if not isinstance(value, str):
+            return value
+        try:
+            return ast.literal_eval(value)
+        except (ValueError, SyntaxError):
+            return value  # plain strings such as "rbf"
+
+    return {name: parse(value) for name, value in raw.items()}
+
+
+def select_final_model() -> dict:
+    """Apply the pre-declared rule: Logistic Regression unless another model clearly beats it.
+
+    'Clearly' = its mean CV PR-AUC is more than one standard deviation (of Logistic Regression's
+    CV PR-AUC) higher. Only Approach A is considered: B and C did not improve on it.
+    """
+    from somnoscreen.experiments import strategy_for
+
+    summary = json.loads((PHASE2_DIR / "summary.json").read_text())
+    chosen = summary["imbalance_strategy_chosen"]
+    cv = pd.read_csv(PHASE2_DIR / "approach_cv_summary.csv")
+    cv = cv[cv.Approach == "A"].set_index("Model")
+    best = cv["PR_AUC_mean"].idxmax()
+    preferred = config.PREFERRED_MODEL
+    margin = cv.loc[best, "PR_AUC_mean"] - cv.loc[preferred, "PR_AUC_mean"]
+    name = preferred if margin <= cv.loc[preferred, "PR_AUC_std"] else best
+    strategy = strategy_for(name, chosen)
+    return {
+        "model": name,
+        "imbalance_strategy": strategy,
+        "params": load_best_params(f"A | {strategy} | {name}"),
+        "best_cv_model": best,
+        "best_cv_pr_auc": cv.loc[best, "PR_AUC_mean"],
+        "preferred_cv_pr_auc": cv.loc[preferred, "PR_AUC_mean"],
+        "preferred_cv_pr_auc_sd": cv.loc[preferred, "PR_AUC_std"],
+        "rule": f"{preferred} unless another model's mean CV PR-AUC is more than one SD higher",
+    }
+
+
+def final_base_estimator(selection: dict):
+    """The selected model's pipeline with its tuned hyper-parameters (not yet calibrated)."""
+    from somnoscreen.experiments import approach_pipeline
+
+    return approach_pipeline(selection["model"], "A", selection["imbalance_strategy"]).set_params(
+        **selection["params"])
+
+
+def choose_calibration(base, X: pd.DataFrame, y: pd.Series) -> tuple[str, pd.DataFrame, pd.DataFrame]:
+    """Compare no calibration / sigmoid / isotonic with 5x5 CV; keep one only if Brier clearly drops."""
+    tables = []
+    for method in CALIBRATION_METHODS:
+        folds, _ = repeated_cv(calibrated(base, method), X, y)
+        tables.append(folds.assign(Calibration=method))
+        print(f"  calibration={method:9s} CV Brier {folds['Brier'].mean():.4f}", flush=True)
+    folds = pd.concat(tables, ignore_index=True)
+    summary = summarize_folds(folds, ["Calibration"]).set_index("Calibration")
+    best = summary["Brier_mean"].idxmin()
+    gain = summary.loc["none", "Brier_mean"] - summary.loc[best, "Brier_mean"]
+    method = best if gain >= config.MIN_BRIER_IMPROVEMENT else "none"
+    return method, folds, summary.reset_index()
+
+
+def bootstrap_ci(y_true: np.ndarray, probs: np.ndarray, metric) -> tuple[float, float]:
+    """95% bootstrap interval of a test-set metric."""
+    idx = bootstrap_indices(len(y_true), config.N_BOOTSTRAP, config.RANDOM_STATE)
+    lo, hi = np.percentile(bootstrap_metric(y_true, probs, idx, metric), [2.5, 97.5])
+    return float(lo), float(hi)
+
+
+def run_final_evaluation() -> None:
+    """Evaluate the final model choice on training CV and, once, on the held-out test set."""
+    from somnoscreen import figures
+    from somnoscreen.data import load_dataset, split_train_test
+    from somnoscreen.explain import explain_rows, global_importance
+    from somnoscreen.features import FEATURE_NAMES, TARGET
+
+    df = load_dataset()
+    X, y = df[FEATURE_NAMES], df[TARGET]
+    idx_train, idx_test = split_train_test(df)
+    X_tr, y_tr, X_te, y_te = X.loc[idx_train], y.loc[idx_train], X.loc[idx_test], y.loc[idx_test]
+
+    selection = select_final_model()
+    print(f"Final model: {selection['model']} ({selection['imbalance_strategy']})")
+    base = final_base_estimator(selection)
+
+    print("Calibration check (5x5 CV on training rows)")
+    method, cal_folds, cal_summary = choose_calibration(base, X_tr, y_tr)
+    cal_summary.to_csv(config.RESULTS_DIR / "calibration_cv_summary.csv", index=False)
+    cal_folds.to_csv(config.RESULTS_DIR / "calibration_cv_folds.csv", index=False)
+    selection["calibration"] = method
+    final = calibrated(base, method)
+
+    # Screening threshold from out-of-fold TRAINING predictions only.
+    oof = oof_probabilities(final, X_tr, y_tr)
+    threshold = threshold_for_recall(y_tr, oof)
+    oof_at_threshold = screening_metrics(y_tr, oof, threshold)
+
+    # One final check on the untouched test set.
+    model = clone(final).fit(X_tr, y_tr)
+    raw_model = clone(base).fit(X_tr, y_tr)
+    probs, raw_probs = model.predict_proba(X_te)[:, 1], raw_model.predict_proba(X_te)[:, 1]
+    test = screening_metrics(y_te, probs, threshold)
+    majority = screening_metrics(y_te, np.full(len(y_te), y_tr.mean()), 1.0)  # flags nobody
+    y_np = y_te.to_numpy()
+    cis = {m: bootstrap_ci(y_np, probs, fn)
+           for m, fn in [("ROC_AUC", roc_auc_score), ("PR_AUC", average_precision_score)]}
+    pd.DataFrame([{"Model": f"{selection['model']} (final)", **test},
+                  {"Model": "Majority class (flags nobody)", **majority}]).to_csv(
+        config.RESULTS_DIR / "final_test_metrics.csv", index=False)
+
+    # Fairness at the screening threshold.
+    preds = (probs >= threshold).astype(int)
+    groups = fairness_groups(df.loc[idx_test])
+    fairness = pd.DataFrame(group_metrics(y_te, preds, groups["Gender"], "Gender")
+                            + group_metrics(y_te, preds, groups["Age"], "Age"))
+    fairness.to_csv(config.RESULTS_DIR / "fairness.csv", index=False)
+
+    # Global SHAP importance on a sample of test rows (the final model's own probabilities).
+    background = X_tr.sample(100, random_state=config.RANDOM_STATE)
+    shap_rows = X_te.sample(300, random_state=config.RANDOM_STATE)
+    importance = global_importance(explain_rows(model, background, shap_rows))
+    importance.rename("mean_abs_shap").to_csv(config.RESULTS_DIR / "shap_importance.csv")
+
+    cv_final = cal_summary.set_index("Calibration").loc[method]
+    report = {
+        "selection": selection,
+        "target_recall": config.TARGET_RECALL,
+        "screening_threshold": threshold,
+        "train_oof_at_threshold": oof_at_threshold,
+        "cv_5x5_final_model": {k: cv_final[k] for k in cv_final.index},
+        "test_at_threshold": test,
+        "test_bootstrap_95ci": cis,
+        "test_majority_baseline": majority,
+        "test_raw_uncalibrated_brier": brier_score_loss(y_te, raw_probs),
+        "n_train": len(X_tr),
+        "n_test": len(X_te),
+    }
+    save_json(report, config.RESULTS_DIR / "final_model_evaluation.json")
+
+    figures.roc_pr_curves(y_np, probs, PHASE2_DIR / "test_probabilities.csv", selection["model"])
+    figures.calibration_plot(y_np, raw_probs, probs, method)
+    figures.fairness_plot(fairness)
+    figures.shap_importance_plot(importance, selection["model"])
+    figures.imbalance_plot(pd.read_csv(PHASE2_DIR / "imbalance_cv_summary.csv"))
+    figures.approach_plot(pd.read_csv(PHASE2_DIR / "approach_cv_summary.csv"))
+    print(json.dumps(report, indent=2, default=lambda o: o.item() if isinstance(o, np.generic) else str(o)))
+
+
+if __name__ == "__main__":
+    run_final_evaluation()

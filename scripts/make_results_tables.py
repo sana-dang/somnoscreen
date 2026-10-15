@@ -64,7 +64,8 @@ def main() -> None:
     rows = []
     for key in ["B vs A | ROC_AUC", "B vs A | PR_AUC", "C vs A | ROC_AUC", "C vs A | PR_AUC"]:
         c, b = summary["cv_corrected_ttest_counts"][key], summary["test_bootstrap_counts"][key]
-        rows.append([key.replace(" | ", ", ").replace("_", "-"), f"{c['better']} / {c['worse']} / {c['no clear difference']}",
+        name = key.replace(" | ", ", ").replace("_", "-")
+        rows.append([name, f"{c['better']} / {c['worse']} / {c['no clear difference']}",
                      f"{b['better']} / {b['worse']} / {b['no clear difference']}"])
     out.append(table(rows, ["Comparison", "CV corrected t-test: better / worse / no difference",
                             "Test bootstrap: better / worse / no difference"]))

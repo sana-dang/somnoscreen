@@ -1,0 +1,138 @@
+{
+  "name": "SomnoScreen",
+  "created": "2026-10-16",
+  "target": "Self-reported: ever told a doctor you had trouble sleeping (NHANES SLQ050). Not a clinical diagnosis.",
+  "data": "NHANES 2017-2018, adults who answered SLQ050 Yes/No",
+  "n_rows": 5824,
+  "base_rate": 0.26785714285714285,
+  "model": "Logistic Regression",
+  "imbalance_strategy": "class_weight",
+  "hyperparameters": {
+    "model__C": 0.01
+  },
+  "calibration": "sigmoid",
+  "feature_order": [
+    "age",
+    "gender",
+    "education",
+    "bmi",
+    "waist",
+    "systolic_bp",
+    "diastolic_bp",
+    "pulse",
+    "snoring",
+    "snort_stop_breathing",
+    "daytime_sleepiness",
+    "vigorous_work",
+    "vigorous_recreation",
+    "smoked_100",
+    "sleep_hours_weekday",
+    "sleep_hours_weekend",
+    "phq_score",
+    "general_health",
+    "sitting_minutes"
+  ],
+  "feature_labels": {
+    "age": "Age",
+    "gender": "Gender (female)",
+    "education": "Education level",
+    "bmi": "Body mass index (BMI)",
+    "waist": "Waist size",
+    "systolic_bp": "Blood pressure (systolic)",
+    "diastolic_bp": "Blood pressure (diastolic)",
+    "pulse": "Resting pulse",
+    "snoring": "Snoring",
+    "snort_stop_breathing": "Snorting / stopping breathing",
+    "daytime_sleepiness": "Daytime sleepiness",
+    "vigorous_work": "Vigorous activity at work",
+    "vigorous_recreation": "Vigorous exercise / sport",
+    "smoked_100": "Has smoked (100+ cigarettes)",
+    "sleep_hours_weekday": "Sleep hours (weekdays)",
+    "sleep_hours_weekend": "Sleep hours (weekends)",
+    "phq_score": "Mood score (PHQ, 7 items)",
+    "general_health": "Self-rated health (higher = worse)",
+    "sitting_minutes": "Sitting time per day"
+  },
+  "target_recall": 0.7,
+  "screening_threshold": 0.24712245427609358,
+  "risk_bands": {
+    "Low": [
+      0.0,
+      0.24712245427609358
+    ],
+    "Moderate": [
+      0.24712245427609358,
+      0.5
+    ],
+    "High": [
+      0.5,
+      1.0
+    ]
+  },
+  "metrics": {
+    "held_out_test": {
+      "Threshold": 0.24618594707420738,
+      "Accuracy": 0.6695278969957081,
+      "Balanced_Acc": 0.6757353383232633,
+      "Precision": 0.4274353876739563,
+      "Recall": 0.6891025641025641,
+      "F1": 0.5276073619631901,
+      "ROC_AUC": 0.757913247362251,
+      "PR_AUC": 0.5300299560186676,
+      "Brier": 0.16339269546239263
+    },
+    "held_out_test_threshold": 0.24618594707420738,
+    "held_out_test_95ci": {
+      "ROC_AUC": [
+        0.7269311131560771,
+        0.7898187485266511
+      ],
+      "PR_AUC": [
+        0.4701969814054006,
+        0.5933634289138228
+      ]
+    },
+    "cv_5x5_training": {
+      "ROC_AUC_mean": 0.7573312402310581,
+      "ROC_AUC_std": 0.014598873038315245,
+      "PR_AUC_mean": 0.5472091848377935,
+      "PR_AUC_std": 0.01771010686531999,
+      "Brier_mean": 0.16280741090395756,
+      "Brier_std": 0.0034982229224119837,
+      "Accuracy@0.5_mean": 0.7646723030752848,
+      "Accuracy@0.5_std": 0.008222991936666535,
+      "Balanced_Acc@0.5_mean": 0.6152608798750646,
+      "Balanced_Acc@0.5_std": 0.010866621001816517,
+      "Precision@0.5_mean": 0.6324293078347221,
+      "Precision@0.5_std": 0.038437171414362405,
+      "Recall@0.5_mean": 0.2934342168674699,
+      "Recall@0.5_std": 0.022841079402124757,
+      "F1@0.5_mean": 0.4001578618364682,
+      "F1@0.5_std": 0.023028234111280313,
+      "Precision@Recall_mean": 0.4534375855329001,
+      "Precision@Recall_std": 0.025888086980963697
+    },
+    "all_data_out_of_fold_at_deployed_threshold": {
+      "Threshold": 0.24712245427609358,
+      "Accuracy": 0.6864697802197802,
+      "Balanced_Acc": 0.6907598499061913,
+      "Precision": 0.44571428571428573,
+      "Recall": 0.7,
+      "F1": 0.5446384039900249,
+      "ROC_AUC": 0.7571745562130178,
+      "PR_AUC": 0.5416215834078048,
+      "Brier": 0.1628167548702747
+    }
+  },
+  "library_versions": {
+    "python": "3.11.17",
+    "scikit-learn": "1.6.1",
+    "imbalanced-learn": "0.13.0",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "xgboost": "3.2.0",
+    "lightgbm": "4.7.0",
+    "shap": "0.51.0",
+    "joblib": "1.4.2"
+  }
+}

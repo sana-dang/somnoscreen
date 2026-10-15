@@ -247,3 +247,33 @@ def answers_to_frame(answers: dict[str, float | None]) -> pd.DataFrame:
         raise ValueError(f"Unknown features: {sorted(unknown)}")
     row = {name: answers.get(name) for name in FEATURE_NAMES}
     return pd.DataFrame([row], columns=FEATURE_NAMES).astype(float)
+
+
+PHQ_OPTIONS: dict[str, float] = {text: value for _, text, value in PHQ_CHOICES}
+FREQUENT_PHQ_VALUE = 2  # "More than half the days" or more
+
+
+def form_to_answers(form: dict) -> dict[str, float | None]:
+    """Convert app form input (answer texts, numbers) into model values, using this spec only.
+
+    `form` holds: answer text for each select question, a number (or None) for each number
+    question, "height_cm" and "weight_kg" for BMI, and "phq" = {PHQ item code: answer text}.
+    """
+    answers: dict[str, float | None] = {}
+    for f in FEATURES:
+        if f.widget == "select":
+            text = form.get(f.name)
+            answers[f.name] = f.options[text] if text is not None else None
+        elif f.widget == "number":
+            answers[f.name] = form.get(f.name)
+        elif f.widget == "bmi":
+            answers[f.name] = compute_bmi(form.get("height_cm"), form.get("weight_kg"))
+        elif f.widget == "phq":
+            phq = form.get("phq", {})
+            answers[f.name] = phq_total([PHQ_OPTIONS.get(phq.get(code)) for code in PHQ_ITEMS])
+    return answers
+
+
+def frequent_phq_answers(phq_form: dict[str, str | None]) -> int:
+    """How many PHQ items were answered 'More than half the days' or 'Nearly every day'."""
+    return sum(PHQ_OPTIONS.get(text, 0) >= FREQUENT_PHQ_VALUE for text in phq_form.values() if text)

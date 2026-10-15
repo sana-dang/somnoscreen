@@ -1,0 +1,5 @@
+Group_Type,Group,N,Positive_Rate,Accuracy,Precision,Recall,F1
+Gender,Male,541,0.2403,0.7856,0.6167,0.2846,0.3895
+Gender,Female,624,0.2917,0.7532,0.6522,0.3297,0.438
+Age,40 and above,724,0.3356,0.7238,0.672,0.3457,0.4565
+Age,Under 40,441,0.1565,0.8413,0.4815,0.1884,0.2708

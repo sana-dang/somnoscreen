@@ -1,0 +1,43 @@
+Model,Comparison,Metric,Diff,Significant
+Logistic Regression,B vs A,Accuracy,-0.0026,False
+Logistic Regression,B vs A,F1,-0.0027,False
+Logistic Regression,B vs A,ROC_AUC,0.0006,False
+Logistic Regression,C vs A,Accuracy,0.0026,False
+Logistic Regression,C vs A,F1,0.0336,True
+Logistic Regression,C vs A,ROC_AUC,-0.027,True
+KNN,B vs A,Accuracy,-0.006,False
+KNN,B vs A,F1,0.0291,False
+KNN,B vs A,ROC_AUC,-0.0039,False
+KNN,C vs A,Accuracy,-0.0206,False
+KNN,C vs A,F1,0.1471,True
+KNN,C vs A,ROC_AUC,-0.0681,True
+SVM,B vs A,Accuracy,-0.0232,True
+SVM,B vs A,F1,-0.1494,True
+SVM,B vs A,ROC_AUC,-0.0197,True
+SVM,C vs A,Accuracy,-0.0069,False
+SVM,C vs A,F1,-0.03,False
+SVM,C vs A,ROC_AUC,-0.0453,True
+Random Forest,B vs A,Accuracy,0.0034,False
+Random Forest,B vs A,F1,-0.0847,True
+Random Forest,B vs A,ROC_AUC,-0.0001,False
+Random Forest,C vs A,Accuracy,-0.006,False
+Random Forest,C vs A,F1,-0.0449,False
+Random Forest,C vs A,ROC_AUC,-0.0207,True
+Gradient Boosting,B vs A,Accuracy,-0.0086,False
+Gradient Boosting,B vs A,F1,0.1154,True
+Gradient Boosting,B vs A,ROC_AUC,0.0031,False
+Gradient Boosting,C vs A,Accuracy,-0.0163,False
+Gradient Boosting,C vs A,F1,0.0756,True
+Gradient Boosting,C vs A,ROC_AUC,-0.0223,True
+XGBoost,B vs A,Accuracy,0.006,False
+XGBoost,B vs A,F1,-0.0298,False
+XGBoost,B vs A,ROC_AUC,0.0105,True
+XGBoost,C vs A,Accuracy,-0.0163,False
+XGBoost,C vs A,F1,-0.0934,True
+XGBoost,C vs A,ROC_AUC,-0.0147,False
+LightGBM,B vs A,Accuracy,-0.0103,False
+LightGBM,B vs A,F1,0.0641,True
+LightGBM,B vs A,ROC_AUC,0.0018,False
+LightGBM,C vs A,Accuracy,-0.0258,True
+LightGBM,C vs A,F1,-0.0101,False
+LightGBM,C vs A,ROC_AUC,-0.0211,True

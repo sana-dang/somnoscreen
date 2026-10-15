@@ -1,0 +1,276 @@
+Section,Item,Metric,Original,Reproduced,Abs_Diff,Match
+Test-set comparison,A: Direct Classification | Logistic Regression,CV_Score,0.7635,0.7635,0.0,True
+Test-set comparison,A: Direct Classification | Logistic Regression,Accuracy,0.7682,0.7682,0.0,True
+Test-set comparison,A: Direct Classification | Logistic Regression,Balanced_Acc,0.6232,0.6232,0.0,True
+Test-set comparison,A: Direct Classification | Logistic Regression,Precision,0.6382,0.6382,0.0,True
+Test-set comparison,A: Direct Classification | Logistic Regression,Recall,0.3109,0.3109,0.0,True
+Test-set comparison,A: Direct Classification | Logistic Regression,F1,0.4181,0.4181,0.0,True
+Test-set comparison,A: Direct Classification | Logistic Regression,ROC_AUC,0.7543,0.7543,0.0,True
+Test-set comparison,A: Direct Classification | Logistic Regression,Threshold,0.75,0.75,0.0,True
+Test-set comparison,A: Direct Classification | Random Forest,CV_Score,0.7542,0.7542,0.0,True
+Test-set comparison,A: Direct Classification | Random Forest,Accuracy,0.7451,0.7451,0.0,True
+Test-set comparison,A: Direct Classification | Random Forest,Balanced_Acc,0.6155,0.6155,0.0,True
+Test-set comparison,A: Direct Classification | Random Forest,Precision,0.5385,0.5385,0.0,True
+Test-set comparison,A: Direct Classification | Random Forest,Recall,0.3365,0.3365,0.0,True
+Test-set comparison,A: Direct Classification | Random Forest,F1,0.4142,0.4142,0.0,True
+Test-set comparison,A: Direct Classification | Random Forest,ROC_AUC,0.7399,0.7399,0.0,True
+Test-set comparison,A: Direct Classification | Random Forest,Threshold,0.56,0.56,0.0,True
+Test-set comparison,A: Direct Classification | XGBoost,CV_Score,0.7598,0.7598,0.0,True
+Test-set comparison,A: Direct Classification | XGBoost,Accuracy,0.7554,0.7554,0.0,True
+Test-set comparison,A: Direct Classification | XGBoost,Balanced_Acc,0.6185,0.6185,0.0,True
+Test-set comparison,A: Direct Classification | XGBoost,Precision,0.5771,0.5771,0.0,True
+Test-set comparison,A: Direct Classification | XGBoost,Recall,0.3237,0.3237,0.0,True
+Test-set comparison,A: Direct Classification | XGBoost,F1,0.4148,0.4148,0.0,True
+Test-set comparison,A: Direct Classification | XGBoost,ROC_AUC,0.7427,0.7427,0.0,True
+Test-set comparison,A: Direct Classification | XGBoost,Threshold,0.56,0.56,0.0,True
+Test-set comparison,A: Direct Classification | SVM,CV_Score,0.7508,0.7508,0.0,True
+Test-set comparison,A: Direct Classification | SVM,Accuracy,0.7571,0.7571,0.0,True
+Test-set comparison,A: Direct Classification | SVM,Balanced_Acc,0.6146,0.6146,0.0,True
+Test-set comparison,A: Direct Classification | SVM,Precision,0.589,0.589,0.0,True
+Test-set comparison,A: Direct Classification | SVM,Recall,0.3077,0.3077,0.0,True
+Test-set comparison,A: Direct Classification | SVM,F1,0.4042,0.4042,0.0,True
+Test-set comparison,A: Direct Classification | SVM,ROC_AUC,0.7496,0.7496,0.0,True
+Test-set comparison,A: Direct Classification | SVM,Threshold,0.75,0.75,0.0,True
+Test-set comparison,A: Direct Classification | LightGBM,CV_Score,0.7579,0.7579,0.0,True
+Test-set comparison,A: Direct Classification | LightGBM,Accuracy,0.7614,0.7614,0.0,True
+Test-set comparison,A: Direct Classification | LightGBM,Balanced_Acc,0.5901,0.5901,0.0,True
+Test-set comparison,A: Direct Classification | LightGBM,Precision,0.6635,0.6635,0.0,True
+Test-set comparison,A: Direct Classification | LightGBM,Recall,0.2212,0.2212,0.0,True
+Test-set comparison,A: Direct Classification | LightGBM,F1,0.3317,0.3317,0.0,True
+Test-set comparison,A: Direct Classification | LightGBM,ROC_AUC,0.7503,0.7503,0.0,True
+Test-set comparison,A: Direct Classification | LightGBM,Threshold,0.63,0.63,0.0,True
+Test-set comparison,A: Direct Classification | Gradient Boosting,CV_Score,0.763,0.763,0.0,True
+Test-set comparison,A: Direct Classification | Gradient Boosting,Accuracy,0.7597,0.7597,0.0,True
+Test-set comparison,A: Direct Classification | Gradient Boosting,Balanced_Acc,0.5858,0.5858,0.0,True
+Test-set comparison,A: Direct Classification | Gradient Boosting,Precision,0.66,0.66,0.0,True
+Test-set comparison,A: Direct Classification | Gradient Boosting,Recall,0.2115,0.2115,0.0,True
+Test-set comparison,A: Direct Classification | Gradient Boosting,F1,0.3204,0.3204,0.0,True
+Test-set comparison,A: Direct Classification | Gradient Boosting,ROC_AUC,0.7497,0.7497,0.0,True
+Test-set comparison,A: Direct Classification | Gradient Boosting,Threshold,0.67,0.67,0.0,True
+Test-set comparison,A: Direct Classification | KNN,CV_Score,0.7476,0.7476,0.0,True
+Test-set comparison,A: Direct Classification | KNN,Accuracy,0.7433,0.7433,0.0,True
+Test-set comparison,A: Direct Classification | KNN,Balanced_Acc,0.5544,0.5544,0.0,True
+Test-set comparison,A: Direct Classification | KNN,Precision,0.5823,0.5823,0.0,True
+Test-set comparison,A: Direct Classification | KNN,Recall,0.1474,0.1474,0.0,True
+Test-set comparison,A: Direct Classification | KNN,F1,0.2353,0.2353,0.0,True
+Test-set comparison,A: Direct Classification | KNN,ROC_AUC,0.7063,0.7063,0.0,True
+Test-set comparison,A: Direct Classification | KNN,Threshold,0.85,0.85,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Logistic Regression,CV_Score,0.7626,0.7626,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Logistic Regression,Accuracy,0.7657,0.7657,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Logistic Regression,Balanced_Acc,0.6215,0.6215,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Logistic Regression,Precision,0.6258,0.6258,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Logistic Regression,Recall,0.3109,0.3109,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Logistic Regression,F1,0.4154,0.4154,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Logistic Regression,ROC_AUC,0.7549,0.7549,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Logistic Regression,Threshold,0.76,0.76,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Random Forest,CV_Score,0.7547,0.7547,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Random Forest,Accuracy,0.7485,0.7485,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Random Forest,Balanced_Acc,0.5843,0.5843,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Random Forest,Precision,0.576,0.576,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Random Forest,Recall,0.2308,0.2308,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Random Forest,F1,0.3295,0.3295,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Random Forest,ROC_AUC,0.7398,0.7398,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Random Forest,Threshold,0.6,0.6,0.0,True
+Test-set comparison,B: Cluster-then-Classify | XGBoost,CV_Score,0.757,0.757,0.0,True
+Test-set comparison,B: Cluster-then-Classify | XGBoost,Accuracy,0.7614,0.7614,0.0,True
+Test-set comparison,B: Cluster-then-Classify | XGBoost,Balanced_Acc,0.6084,0.6084,0.0,True
+Test-set comparison,B: Cluster-then-Classify | XGBoost,Precision,0.6214,0.6214,0.0,True
+Test-set comparison,B: Cluster-then-Classify | XGBoost,Recall,0.2788,0.2788,0.0,True
+Test-set comparison,B: Cluster-then-Classify | XGBoost,F1,0.385,0.385,0.0,True
+Test-set comparison,B: Cluster-then-Classify | XGBoost,ROC_AUC,0.7532,0.7532,0.0,True
+Test-set comparison,B: Cluster-then-Classify | XGBoost,Threshold,0.58,0.58,0.0,True
+Test-set comparison,B: Cluster-then-Classify | SVM,CV_Score,0.7461,0.7461,0.0,True
+Test-set comparison,B: Cluster-then-Classify | SVM,Accuracy,0.7339,0.7339,0.0,True
+Test-set comparison,B: Cluster-then-Classify | SVM,Balanced_Acc,0.555,0.555,0.0,True
+Test-set comparison,B: Cluster-then-Classify | SVM,Precision,0.5096,0.5096,0.0,True
+Test-set comparison,B: Cluster-then-Classify | SVM,Recall,0.1699,0.1699,0.0,True
+Test-set comparison,B: Cluster-then-Classify | SVM,F1,0.2548,0.2548,0.0,True
+Test-set comparison,B: Cluster-then-Classify | SVM,ROC_AUC,0.7299,0.7299,0.0,True
+Test-set comparison,B: Cluster-then-Classify | SVM,Threshold,0.82,0.82,0.0,True
+Test-set comparison,B: Cluster-then-Classify | LightGBM,CV_Score,0.7594,0.7594,0.0,True
+Test-set comparison,B: Cluster-then-Classify | LightGBM,Accuracy,0.7511,0.7511,0.0,True
+Test-set comparison,B: Cluster-then-Classify | LightGBM,Balanced_Acc,0.6095,0.6095,0.0,True
+Test-set comparison,B: Cluster-then-Classify | LightGBM,Precision,0.5655,0.5655,0.0,True
+Test-set comparison,B: Cluster-then-Classify | LightGBM,Recall,0.3045,0.3045,0.0,True
+Test-set comparison,B: Cluster-then-Classify | LightGBM,F1,0.3958,0.3958,0.0,True
+Test-set comparison,B: Cluster-then-Classify | LightGBM,ROC_AUC,0.7521,0.7521,0.0,True
+Test-set comparison,B: Cluster-then-Classify | LightGBM,Threshold,0.55,0.55,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Gradient Boosting,CV_Score,0.7626,0.7626,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Gradient Boosting,Accuracy,0.7511,0.7511,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Gradient Boosting,Balanced_Acc,0.6267,0.6267,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Gradient Boosting,Precision,0.5545,0.5545,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Gradient Boosting,Recall,0.359,0.359,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Gradient Boosting,F1,0.4358,0.4358,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Gradient Boosting,ROC_AUC,0.7527,0.7527,0.0,True
+Test-set comparison,B: Cluster-then-Classify | Gradient Boosting,Threshold,0.56,0.56,0.0,True
+Test-set comparison,B: Cluster-then-Classify | KNN,CV_Score,0.7364,0.7364,0.0,True
+Test-set comparison,B: Cluster-then-Classify | KNN,Accuracy,0.7373,0.7373,0.0,True
+Test-set comparison,B: Cluster-then-Classify | KNN,Balanced_Acc,0.5594,0.5594,0.0,True
+Test-set comparison,B: Cluster-then-Classify | KNN,Precision,0.5288,0.5288,0.0,True
+Test-set comparison,B: Cluster-then-Classify | KNN,Recall,0.1763,0.1763,0.0,True
+Test-set comparison,B: Cluster-then-Classify | KNN,F1,0.2644,0.2644,0.0,True
+Test-set comparison,B: Cluster-then-Classify | KNN,ROC_AUC,0.7024,0.7024,0.0,True
+Test-set comparison,B: Cluster-then-Classify | KNN,Threshold,0.85,0.85,0.0,True
+Test-set comparison,C: Per-Cluster Models | Logistic Regression,CV_Score,0.7652,0.7652,0.0,True
+Test-set comparison,C: Per-Cluster Models | Logistic Regression,Accuracy,0.7708,0.7708,0.0,True
+Test-set comparison,C: Per-Cluster Models | Logistic Regression,Balanced_Acc,0.6382,0.6382,0.0,True
+Test-set comparison,C: Per-Cluster Models | Logistic Regression,Precision,0.6286,0.6286,0.0,True
+Test-set comparison,C: Per-Cluster Models | Logistic Regression,Recall,0.3526,0.3526,0.0,True
+Test-set comparison,C: Per-Cluster Models | Logistic Regression,F1,0.4517,0.4517,0.0,True
+Test-set comparison,C: Per-Cluster Models | Logistic Regression,ROC_AUC,0.7272,0.7272,0.0,True
+Test-set comparison,C: Per-Cluster Models | Random Forest,CV_Score,0.7596,0.7596,0.0,True
+Test-set comparison,C: Per-Cluster Models | Random Forest,Accuracy,0.7391,0.7391,0.0,True
+Test-set comparison,C: Per-Cluster Models | Random Forest,Balanced_Acc,0.5951,0.5951,0.0,True
+Test-set comparison,C: Per-Cluster Models | Random Forest,Precision,0.5235,0.5235,0.0,True
+Test-set comparison,C: Per-Cluster Models | Random Forest,Recall,0.2853,0.2853,0.0,True
+Test-set comparison,C: Per-Cluster Models | Random Forest,F1,0.3693,0.3693,0.0,True
+Test-set comparison,C: Per-Cluster Models | Random Forest,ROC_AUC,0.7191,0.7191,0.0,True
+Test-set comparison,C: Per-Cluster Models | XGBoost,CV_Score,0.7577,0.7577,0.0,True
+Test-set comparison,C: Per-Cluster Models | XGBoost,Accuracy,0.7391,0.7391,0.0,True
+Test-set comparison,C: Per-Cluster Models | XGBoost,Balanced_Acc,0.5779,0.5779,0.0,True
+Test-set comparison,C: Per-Cluster Models | XGBoost,Precision,0.5294,0.5294,0.0,True
+Test-set comparison,C: Per-Cluster Models | XGBoost,Recall,0.2308,0.2308,0.0,True
+Test-set comparison,C: Per-Cluster Models | XGBoost,F1,0.3214,0.3214,0.0,True
+Test-set comparison,C: Per-Cluster Models | XGBoost,ROC_AUC,0.728,0.728,0.0,True
+Test-set comparison,C: Per-Cluster Models | SVM,CV_Score,0.7506,0.7506,0.0,True
+Test-set comparison,C: Per-Cluster Models | SVM,Accuracy,0.7502,0.7502,0.0,True
+Test-set comparison,C: Per-Cluster Models | SVM,Balanced_Acc,0.6007,0.6007,0.0,True
+Test-set comparison,C: Per-Cluster Models | SVM,Precision,0.5686,0.5686,0.0,True
+Test-set comparison,C: Per-Cluster Models | SVM,Recall,0.2788,0.2788,0.0,True
+Test-set comparison,C: Per-Cluster Models | SVM,F1,0.3742,0.3742,0.0,True
+Test-set comparison,C: Per-Cluster Models | SVM,ROC_AUC,0.7043,0.7043,0.0,True
+Test-set comparison,C: Per-Cluster Models | LightGBM,CV_Score,0.7622,0.7622,0.0,True
+Test-set comparison,C: Per-Cluster Models | LightGBM,Accuracy,0.7356,0.7356,0.0,True
+Test-set comparison,C: Per-Cluster Models | LightGBM,Balanced_Acc,0.5765,0.5765,0.0,True
+Test-set comparison,C: Per-Cluster Models | LightGBM,Precision,0.5141,0.5141,0.0,True
+Test-set comparison,C: Per-Cluster Models | LightGBM,Recall,0.234,0.234,0.0,True
+Test-set comparison,C: Per-Cluster Models | LightGBM,F1,0.3216,0.3216,0.0,True
+Test-set comparison,C: Per-Cluster Models | LightGBM,ROC_AUC,0.7292,0.7292,0.0,True
+Test-set comparison,C: Per-Cluster Models | Gradient Boosting,CV_Score,0.7579,0.7579,0.0,True
+Test-set comparison,C: Per-Cluster Models | Gradient Boosting,Accuracy,0.7433,0.7433,0.0,True
+Test-set comparison,C: Per-Cluster Models | Gradient Boosting,Balanced_Acc,0.6072,0.6072,0.0,True
+Test-set comparison,C: Per-Cluster Models | Gradient Boosting,Precision,0.5355,0.5355,0.0,True
+Test-set comparison,C: Per-Cluster Models | Gradient Boosting,Recall,0.3141,0.3141,0.0,True
+Test-set comparison,C: Per-Cluster Models | Gradient Boosting,F1,0.396,0.396,0.0,True
+Test-set comparison,C: Per-Cluster Models | Gradient Boosting,ROC_AUC,0.7274,0.7274,0.0,True
+Test-set comparison,C: Per-Cluster Models | KNN,CV_Score,0.7229,0.7229,0.0,True
+Test-set comparison,C: Per-Cluster Models | KNN,Accuracy,0.7227,0.7227,0.0,True
+Test-set comparison,C: Per-Cluster Models | KNN,Balanced_Acc,0.5952,0.5952,0.0,True
+Test-set comparison,C: Per-Cluster Models | KNN,Precision,0.4739,0.4739,0.0,True
+Test-set comparison,C: Per-Cluster Models | KNN,Recall,0.3205,0.3205,0.0,True
+Test-set comparison,C: Per-Cluster Models | KNN,F1,0.3824,0.3824,0.0,True
+Test-set comparison,C: Per-Cluster Models | KNN,ROC_AUC,0.6382,0.6382,0.0,True
+Test-set comparison,Baseline: always predict majority class | Dummy,Accuracy,0.7322,0.7322,0.0,True
+Test-set comparison,Baseline: always predict majority class | Dummy,Balanced_Acc,0.5,0.5,0.0,True
+Test-set comparison,Baseline: always predict majority class | Dummy,Precision,0.0,0.0,0.0,True
+Test-set comparison,Baseline: always predict majority class | Dummy,Recall,0.0,0.0,0.0,True
+Test-set comparison,Baseline: always predict majority class | Dummy,F1,0.0,0.0,0.0,True
+Test-set comparison,Baseline: always predict majority class | Dummy,ROC_AUC,0.5,0.5,0.0,True
+Cluster sizes,Cluster 0,Train_N,2201.0,2201.0,0.0,True
+Cluster sizes,Cluster 1,Train_N,700.0,700.0,0.0,True
+Cluster sizes,Cluster 2,Train_N,988.0,988.0,0.0,True
+Cluster sizes,Cluster 3,Train_N,770.0,770.0,0.0,True
+Paired bootstrap,Logistic Regression | B vs A | Accuracy,Diff,-0.0026,-0.0026,0.0,True
+Paired bootstrap,Logistic Regression | B vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Logistic Regression | B vs A | F1,Diff,-0.0027,-0.0027,0.0,True
+Paired bootstrap,Logistic Regression | B vs A | F1,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Logistic Regression | B vs A | ROC_AUC,Diff,0.0006,0.0006,0.0,True
+Paired bootstrap,Logistic Regression | B vs A | ROC_AUC,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Logistic Regression | C vs A | Accuracy,Diff,0.0026,0.0026,0.0,True
+Paired bootstrap,Logistic Regression | C vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Logistic Regression | C vs A | F1,Diff,0.0336,0.0336,0.0,True
+Paired bootstrap,Logistic Regression | C vs A | F1,Significant,1.0,1.0,0.0,True
+Paired bootstrap,Logistic Regression | C vs A | ROC_AUC,Diff,-0.027,-0.027,0.0,True
+Paired bootstrap,Logistic Regression | C vs A | ROC_AUC,Significant,1.0,1.0,0.0,True
+Paired bootstrap,Random Forest | B vs A | Accuracy,Diff,0.0034,0.0034,0.0,True
+Paired bootstrap,Random Forest | B vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Random Forest | B vs A | F1,Diff,-0.0847,-0.0847,0.0,True
+Paired bootstrap,Random Forest | B vs A | F1,Significant,1.0,1.0,0.0,True
+Paired bootstrap,Random Forest | B vs A | ROC_AUC,Diff,-0.0001,-0.0001,0.0,True
+Paired bootstrap,Random Forest | B vs A | ROC_AUC,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Random Forest | C vs A | Accuracy,Diff,-0.006,-0.006,0.0,True
+Paired bootstrap,Random Forest | C vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Random Forest | C vs A | F1,Diff,-0.0449,-0.0449,0.0,True
+Paired bootstrap,Random Forest | C vs A | F1,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Random Forest | C vs A | ROC_AUC,Diff,-0.0207,-0.0207,0.0,True
+Paired bootstrap,Random Forest | C vs A | ROC_AUC,Significant,1.0,1.0,0.0,True
+Paired bootstrap,XGBoost | B vs A | Accuracy,Diff,0.006,0.006,0.0,True
+Paired bootstrap,XGBoost | B vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,XGBoost | B vs A | F1,Diff,-0.0298,-0.0298,0.0,True
+Paired bootstrap,XGBoost | B vs A | F1,Significant,0.0,0.0,0.0,True
+Paired bootstrap,XGBoost | B vs A | ROC_AUC,Diff,0.0105,0.0105,0.0,True
+Paired bootstrap,XGBoost | B vs A | ROC_AUC,Significant,1.0,1.0,0.0,True
+Paired bootstrap,XGBoost | C vs A | Accuracy,Diff,-0.0163,-0.0163,0.0,True
+Paired bootstrap,XGBoost | C vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,XGBoost | C vs A | F1,Diff,-0.0934,-0.0934,0.0,True
+Paired bootstrap,XGBoost | C vs A | F1,Significant,1.0,1.0,0.0,True
+Paired bootstrap,XGBoost | C vs A | ROC_AUC,Diff,-0.0147,-0.0147,0.0,True
+Paired bootstrap,XGBoost | C vs A | ROC_AUC,Significant,0.0,0.0,0.0,True
+Paired bootstrap,SVM | B vs A | Accuracy,Diff,-0.0232,-0.0232,0.0,True
+Paired bootstrap,SVM | B vs A | Accuracy,Significant,1.0,1.0,0.0,True
+Paired bootstrap,SVM | B vs A | F1,Diff,-0.1494,-0.1494,0.0,True
+Paired bootstrap,SVM | B vs A | F1,Significant,1.0,1.0,0.0,True
+Paired bootstrap,SVM | B vs A | ROC_AUC,Diff,-0.0197,-0.0197,0.0,True
+Paired bootstrap,SVM | B vs A | ROC_AUC,Significant,1.0,1.0,0.0,True
+Paired bootstrap,SVM | C vs A | Accuracy,Diff,-0.0069,-0.0069,0.0,True
+Paired bootstrap,SVM | C vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,SVM | C vs A | F1,Diff,-0.03,-0.03,0.0,True
+Paired bootstrap,SVM | C vs A | F1,Significant,0.0,0.0,0.0,True
+Paired bootstrap,SVM | C vs A | ROC_AUC,Diff,-0.0453,-0.0453,0.0,True
+Paired bootstrap,SVM | C vs A | ROC_AUC,Significant,1.0,1.0,0.0,True
+Paired bootstrap,LightGBM | B vs A | Accuracy,Diff,-0.0103,-0.0103,0.0,True
+Paired bootstrap,LightGBM | B vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,LightGBM | B vs A | F1,Diff,0.0641,0.0641,0.0,True
+Paired bootstrap,LightGBM | B vs A | F1,Significant,1.0,1.0,0.0,True
+Paired bootstrap,LightGBM | B vs A | ROC_AUC,Diff,0.0018,0.0018,0.0,True
+Paired bootstrap,LightGBM | B vs A | ROC_AUC,Significant,0.0,0.0,0.0,True
+Paired bootstrap,LightGBM | C vs A | Accuracy,Diff,-0.0258,-0.0258,0.0,True
+Paired bootstrap,LightGBM | C vs A | Accuracy,Significant,1.0,1.0,0.0,True
+Paired bootstrap,LightGBM | C vs A | F1,Diff,-0.0101,-0.0101,0.0,True
+Paired bootstrap,LightGBM | C vs A | F1,Significant,0.0,0.0,0.0,True
+Paired bootstrap,LightGBM | C vs A | ROC_AUC,Diff,-0.0211,-0.0211,0.0,True
+Paired bootstrap,LightGBM | C vs A | ROC_AUC,Significant,1.0,1.0,0.0,True
+Paired bootstrap,Gradient Boosting | B vs A | Accuracy,Diff,-0.0086,-0.0086,0.0,True
+Paired bootstrap,Gradient Boosting | B vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Gradient Boosting | B vs A | F1,Diff,0.1154,0.1154,0.0,True
+Paired bootstrap,Gradient Boosting | B vs A | F1,Significant,1.0,1.0,0.0,True
+Paired bootstrap,Gradient Boosting | B vs A | ROC_AUC,Diff,0.0031,0.0031,0.0,True
+Paired bootstrap,Gradient Boosting | B vs A | ROC_AUC,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Gradient Boosting | C vs A | Accuracy,Diff,-0.0163,-0.0163,0.0,True
+Paired bootstrap,Gradient Boosting | C vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,Gradient Boosting | C vs A | F1,Diff,0.0756,0.0756,0.0,True
+Paired bootstrap,Gradient Boosting | C vs A | F1,Significant,1.0,1.0,0.0,True
+Paired bootstrap,Gradient Boosting | C vs A | ROC_AUC,Diff,-0.0223,-0.0223,0.0,True
+Paired bootstrap,Gradient Boosting | C vs A | ROC_AUC,Significant,1.0,1.0,0.0,True
+Paired bootstrap,KNN | B vs A | Accuracy,Diff,-0.006,-0.006,0.0,True
+Paired bootstrap,KNN | B vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,KNN | B vs A | F1,Diff,0.0291,0.0291,0.0,True
+Paired bootstrap,KNN | B vs A | F1,Significant,0.0,0.0,0.0,True
+Paired bootstrap,KNN | B vs A | ROC_AUC,Diff,-0.0039,-0.0039,0.0,True
+Paired bootstrap,KNN | B vs A | ROC_AUC,Significant,0.0,0.0,0.0,True
+Paired bootstrap,KNN | C vs A | Accuracy,Diff,-0.0206,-0.0206,0.0,True
+Paired bootstrap,KNN | C vs A | Accuracy,Significant,0.0,0.0,0.0,True
+Paired bootstrap,KNN | C vs A | F1,Diff,0.1471,0.1471,0.0,True
+Paired bootstrap,KNN | C vs A | F1,Significant,1.0,1.0,0.0,True
+Paired bootstrap,KNN | C vs A | ROC_AUC,Diff,-0.0681,-0.0681,0.0,True
+Paired bootstrap,KNN | C vs A | ROC_AUC,Significant,1.0,1.0,0.0,True
+Fairness,Male,N,541.0,541.0,0.0,True
+Fairness,Male,Accuracy,0.7856,0.7856,0.0,True
+Fairness,Male,Precision,0.6167,0.6167,0.0,True
+Fairness,Male,Recall,0.2846,0.2846,0.0,True
+Fairness,Male,F1,0.3895,0.3895,0.0,True
+Fairness,Female,N,624.0,624.0,0.0,True
+Fairness,Female,Accuracy,0.7532,0.7532,0.0,True
+Fairness,Female,Precision,0.6522,0.6522,0.0,True
+Fairness,Female,Recall,0.3297,0.3297,0.0,True
+Fairness,Female,F1,0.438,0.438,0.0,True
+Fairness,40 and above,N,724.0,724.0,0.0,True
+Fairness,40 and above,Accuracy,0.7238,0.7238,0.0,True
+Fairness,40 and above,Precision,0.672,0.672,0.0,True
+Fairness,40 and above,Recall,0.3457,0.3457,0.0,True
+Fairness,40 and above,F1,0.4565,0.4565,0.0,True
+Fairness,Under 40,N,441.0,441.0,0.0,True
+Fairness,Under 40,Accuracy,0.8413,0.8413,0.0,True
+Fairness,Under 40,Precision,0.4815,0.4815,0.0,True
+Fairness,Under 40,Recall,0.1884,0.1884,0.0,True
+Fairness,Under 40,F1,0.2708,0.2708,0.0,True

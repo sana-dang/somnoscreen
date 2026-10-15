@@ -1,0 +1,5 @@
+Cluster,Train_N,Test_N,Train_Sleep_Trouble_Rate
+0,2201,485,0.275
+1,700,169,0.436
+2,988,307,0.157
+3,770,204,0.238

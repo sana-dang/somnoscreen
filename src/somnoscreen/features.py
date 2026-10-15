@@ -37,6 +37,9 @@ class Feature:
     default: float | None = None
     step: float | None = None
     help: str = ""
+    # Extra app answer that the model has no value for (e.g. "Prefer not to say"). The app then runs
+    # the model once for every possible value and averages the results instead of guessing one.
+    unsure_option: str = ""
 
     @property
     def value_map(self) -> dict[float, float]:
@@ -67,8 +70,13 @@ FEATURES: list[Feature] = [
         help="NHANES records everyone aged 80 or over as 80.",
     ),
     Feature(
-        "gender", "RIAGENDR", "demographics", "binary", "Gender (female)", "About you",
-        "Gender", "select", choices=((1, "Male", 0), (2, "Female", 1)),
+        # NHANES (RIAGENDR) only recorded male or female, so the model can only use those two values.
+        "gender", "RIAGENDR", "demographics", "binary", "Sex (female)", "About you",
+        "Sex to use for this health estimate", "select", choices=((1, "Male", 0), (2, "Female", 1)),
+        unsure_option="Prefer not to say, or neither fits me",
+        help="The survey data behind this tool only recorded people as male or female, so the model "
+        "can only use one of those. Pick the one you feel fits best for health questions, or choose "
+        "'Prefer not to say, or neither fits me' to see the estimate averaged over both.",
     ),
     Feature(
         "education", "DMDEDUC2", "demographics", "ordinal", "Education level", "About you",
@@ -263,7 +271,7 @@ def form_to_answers(form: dict) -> dict[str, float | None]:
     for f in FEATURES:
         if f.widget == "select":
             text = form.get(f.name)
-            answers[f.name] = f.options[text] if text is not None else None
+            answers[f.name] = f.options[text] if text is not None and text != f.unsure_option else None
         elif f.widget == "number":
             answers[f.name] = form.get(f.name)
         elif f.widget == "bmi":
@@ -277,3 +285,16 @@ def form_to_answers(form: dict) -> dict[str, float | None]:
 def frequent_phq_answers(phq_form: dict[str, str | None]) -> int:
     """How many PHQ items were answered 'More than half the days' or 'Nearly every day'."""
     return sum(PHQ_OPTIONS.get(text, 0) >= FREQUENT_PHQ_VALUE for text in phq_form.values() if text)
+
+
+def expand_unsure_answers(form: dict, answers: dict[str, float | None]) -> list[dict[str, float | None]]:
+    """One copy of `answers` per possible value of every question answered with its unsure option.
+
+    Example: "Prefer not to say" for sex gives two copies, one with female and one with male. The app
+    averages the model over these copies instead of guessing a value.
+    """
+    expanded = [dict(answers)]
+    for f in FEATURES:
+        if f.unsure_option and form.get(f.name) == f.unsure_option:
+            expanded = [{**a, f.name: value} for a in expanded for value in f.options.values()]
+    return expanded

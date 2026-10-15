@@ -34,7 +34,7 @@
   ],
   "feature_labels": {
     "age": "Age",
-    "gender": "Gender (female)",
+    "gender": "Sex (female)",
     "education": "Education level",
     "bmi": "Body mass index (BMI)",
     "waist": "Waist size",

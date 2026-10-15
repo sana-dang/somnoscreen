@@ -26,6 +26,7 @@ from somnoscreen.features import (  # noqa: E402
     PHQ_CHOICES,
     PHQ_ITEMS,
     answers_to_frame,
+    expand_unsure_answers,
     form_to_answers,
     frequent_phq_answers,
 )
@@ -54,7 +55,8 @@ def risk_band(probability: float, bands: dict[str, list[float]]) -> str:
 def ask(feature) -> object:
     """Draw the widget for one feature and return the raw answer."""
     if feature.widget == "select":
-        return st.selectbox(feature.question, list(feature.options), index=None,
+        options = list(feature.options) + ([feature.unsure_option] if feature.unsure_option else [])
+        return st.selectbox(feature.question, options, index=None,
                             placeholder="Choose an answer", help=feature.help or None)
     optional = " (optional)" if feature.optional else ""
     return st.number_input(
@@ -105,8 +107,10 @@ def missing_required(form: dict) -> list[str]:
 
 def show_result(form: dict, model, metadata: dict, background: pd.DataFrame) -> None:
     """Risk %, band, recommendation and the per-person 'why' chart."""
-    row = answers_to_frame(form_to_answers(form))
-    probability = float(model.predict_proba(row)[0, 1])
+    # "Prefer not to say" answers: run the model for every possible value and average, never guess one.
+    rows = [answers_to_frame(a) for a in expand_unsure_answers(form, form_to_answers(form))]
+    probabilities = [float(model.predict_proba(row)[0, 1]) for row in rows]
+    probability = sum(probabilities) / len(probabilities)
     threshold = metadata["screening_threshold"]
     band = risk_band(probability, metadata["risk_bands"])
 
@@ -132,6 +136,10 @@ def show_result(form: dict, model, metadata: dict, background: pd.DataFrame) -> 
             st.markdown("Your answers look less like those of people who reported sleep trouble. If you "
                         "are still worried about your sleep, it is always fine to talk to a doctor.")
 
+    if len(rows) > 1:
+        st.caption(f"You chose not to give a sex for the model, so this is the average of the estimates "
+                   f"using female and using male ({min(probabilities):.0%} to {max(probabilities):.0%}).")
+
     if frequent_phq_answers(form["phq"]) >= 2:
         st.info("Several of your answers about mood and energy were *more than half the days* or *nearly "
                 "every day*. That can be worth talking about with a doctor or counsellor. (This is not "
@@ -139,7 +147,10 @@ def show_result(form: dict, model, metadata: dict, background: pd.DataFrame) -> 
 
     st.subheader("Why this estimate?")
     with st.spinner("Working out which answers mattered most..."):
-        contributions, average = explain_one(model, background, row)
+        # With several versions, average their explanations; the bars still add up to the shown risk.
+        explanations = [explain_one(model, background, row) for row in rows]
+        contributions = sum(c for c, _ in explanations) / len(explanations)
+        average = explanations[0][1]
     st.pyplot(plot_contributions(contributions, top=10))
     st.caption(f"Each bar shows how much one answer moved your estimate compared with an average adult "
                f"in the data (average estimate {average:.0%}). Red raised it, blue lowered it. "

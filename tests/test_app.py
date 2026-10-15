@@ -10,9 +10,11 @@ from somnoscreen import config
 from somnoscreen.features import (
     FEATURE_NAMES,
     FEATURES,
+    FEATURES_BY_NAME,
     PHQ_CHOICES,
     PHQ_ITEMS,
     answers_to_frame,
+    expand_unsure_answers,
     form_to_answers,
     frequent_phq_answers,
 )
@@ -68,6 +70,20 @@ def test_unknown_feature_is_rejected():
         answers_to_frame({"DPQ030": 3})
 
 
+def test_prefer_not_to_say_runs_both_values():
+    form = full_form(gender=FEATURES_BY_NAME["gender"].unsure_option)
+    answers = form_to_answers(form)
+    assert answers["gender"] is None
+    versions = expand_unsure_answers(form, answers)
+    assert sorted(v["gender"] for v in versions) == [0, 1]
+    assert all(v["age"] == answers["age"] for v in versions)
+
+
+def test_known_answer_is_not_expanded():
+    form = full_form(gender="Female")
+    assert len(expand_unsure_answers(form, form_to_answers(form))) == 1
+
+
 def test_frequent_phq_count():
     phq = {code: "Nearly every day" for code in list(PHQ_ITEMS)[:2]}
     phq.update({code: "Not at all" for code in list(PHQ_ITEMS)[2:]})
@@ -95,25 +111,36 @@ def test_model_returns_probabilities_with_blank_optional_fields():
         assert 0.0 <= p[0] <= 1.0
 
 
-@needs_model
-def test_app_runs_end_to_end():
+def _run_app(gender: str):
+    """Fill in and submit the real app with Streamlit's test harness."""
     from streamlit.testing.v1 import AppTest
 
     app = AppTest.from_file(str(config.ROOT / "app" / "streamlit_app.py"), default_timeout=120)
     app.run()
     assert not app.exception
-    form = full_form()
+    form = full_form(gender=gender)
     for box in app.selectbox:
         feature = next(f for f in FEATURES if f.question == box.label)
         box.set_value(form[feature.name])
     for radio in app.radio:
         radio.set_value(PHQ_CHOICES[3][1])  # "Nearly every day" -> gentle PHQ note should appear
-    heights = [n for n in app.number_input if n.label == "Height (cm)"]
-    weights = [n for n in app.number_input if n.label == "Weight (kg)"]
-    heights[0].set_value(170.0)
-    weights[0].set_value(80.0)
+    next(n for n in app.number_input if n.label == "Height (cm)").set_value(170.0)
+    next(n for n in app.number_input if n.label == "Weight (kg)").set_value(80.0)
     app.button[0].click()
     app.run()
     assert not app.exception
+    return app
+
+
+@needs_model
+def test_app_runs_end_to_end():
+    app = _run_app("Female")
     assert any("Estimated risk" in m.label for m in app.metric)
     assert any("counsellor" in i.value for i in app.info)
+
+
+@needs_model
+def test_app_prefer_not_to_say_shows_average():
+    app = _run_app(FEATURES_BY_NAME["gender"].unsure_option)
+    assert any("Estimated risk" in m.label for m in app.metric)
+    assert any("average of the estimates" in c.value for c in app.caption)

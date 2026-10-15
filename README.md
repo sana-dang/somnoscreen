@@ -19,7 +19,7 @@ SomnoScreen started as my undergraduate thesis, which asked a research question:
 - **Data:** [NHANES 2017–2018](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2017) (US CDC health survey): demographics, examination and questionnaire files.
 - **Rows:** 5,824 people (aged 16+) who answered the target question Yes or No: 1,560 Yes / 4,264 No (26.8% positive).
 - **Target:** SLQ050, *"Have you ever told a doctor or other health professional that you have trouble sleeping?"* This is **self-reported**. It is **not a clinical diagnosis** of a sleep disorder, and the app says so.
-- **19 low-cost features:** age, gender, education; BMI, waist, blood pressure (systolic and diastolic), pulse; snoring, snorting or stopping breathing, daytime sleepiness; vigorous work and recreational activity, smoking (100+ cigarettes), daily sitting time; weekday and weekend sleep hours, self-rated general health, and a 7-item PHQ mood score.
+- **19 low-cost features:** age, sex (NHANES recorded only male or female), education; BMI, waist, blood pressure (systolic and diastolic), pulse; snoring, snorting or stopping breathing, daytime sleepiness; vigorous work and recreational activity, smoking (100+ cigarettes), daily sitting time; weekday and weekend sleep hours, self-rated general health, and a 7-item PHQ mood score.
 - **Deliberately excluded:** PHQ item DPQ030 (*"trouble falling or staying asleep"*) asks almost the same thing as the target, so including it would leak the answer.
 - NHANES "refused" / "don't know" codes (7, 9, 77, 7777, 9999, …) become missing values. Missing values are filled **inside** the model pipeline from training rows only.
 
@@ -51,8 +51,8 @@ flowchart LR
    - **Screening threshold** chosen on out-of-fold *training* predictions to catch 70% of "Yes" cases (`TARGET_RECALL` in `config.py`).
    - **Calibration** with `CalibratedClassifierCV`, kept only because it clearly lowers the Brier score.
    - The thesis A/B/C comparison re-run with clusters re-fitted inside every CV fold, a corrected paired t-test on the CV folds and a paired bootstrap on the test set.
-   - **Fairness**: recall and precision by gender and age group at the screening threshold.
-3. **Phase 4: final model + app.** Logistic Regression is refit on all 5,824 rows and served by a Streamlit app with a per-person SHAP explanation.
+   - **Fairness**: recall and precision by sex and age group at the screening threshold.
+3. **Phase 4: final model + app.** Logistic Regression is refit on all 5,824 rows and served by a Streamlit app with a per-person SHAP explanation. The sex question is optional in practice: "Prefer not to say, or neither fits me" averages the model over both recorded values instead of guessing.
 
 ## Results
 
@@ -121,6 +121,7 @@ The strongest drivers of predicted risk are the PHQ mood score, snorting or stop
 - **Survey weights not used.** NHANES oversamples some groups; without weights the results describe this sample, not the US population.
 - **Cross-sectional data:** associations, not causes. A high mood score does not mean low mood *causes* sleep trouble (or the reverse).
 - **US population, 2017–18 only.** The model has not been validated on other countries or years.
+- **Binary sex only.** NHANES 2017–18 recorded people as male or female and has no gender-identity data, so the model cannot represent non-binary or transgender people directly. The app does not guess: anyone can choose *"Prefer not to say, or neither fits me"*, and the app then averages the estimates for both values and shows the range.
 - **Modest accuracy.** ROC-AUC ≈ 0.76 is useful for screening but far from diagnostic.
 - In the repeated-CV comparison, Approach C uses Approach A's tuned settings in every cluster (cluster numbering changes between folds). The test-set check of C tunes each cluster separately, as in the thesis, and agrees.
 

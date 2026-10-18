@@ -12,7 +12,7 @@
 
 Sleep problems are common and under-diagnosed, and the reference test (a sleep study) is expensive. Can a few questions that anyone can answer at home, plus height, weight and an optional blood-pressure reading, flag people who should talk to a doctor about their sleep?
 
-SomnoScreen started as my undergraduate thesis, which asked a research question: **does clustering people into risk profiles before classification improve prediction?** This repository turns the thesis notebook into a tested Python package, re-checks the thesis with a stronger evaluation, and ships the final model as a web app.
+SomnoScreen started as my Master's thesis, which asked a research question: **does clustering people into risk profiles before classification improve prediction?** This repository turns the thesis notebook into a tested Python package, re-checks the thesis with a stronger evaluation, and ships the final model as a web app.
 
 ## Data and target (read this first)
 
